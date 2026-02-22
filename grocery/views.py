@@ -1,5 +1,6 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import GroceryItem
 
 
@@ -32,6 +33,7 @@ def delete_item(request, item_id):
     if request.method == 'POST':
         item = get_object_or_404(GroceryItem, id=item_id)
         item.delete()
+        messages.success(request, 'item deleted successfully!')
     return redirect('grocery:index')
 
 
@@ -41,6 +43,9 @@ def add_item(request):
         name = request.POST.get('name', '').strip()
         if name:
             GroceryItem.objects.create(name=name)
+            messages.success(request, 'item added successfully!')
+        else:
+            messages.error(request, 'please provide value')
     return redirect('grocery:index')
 
 
@@ -57,4 +62,7 @@ def update_item(request, item_id):
         if name:
             item.name = name
             item.save()
+            messages.success(request, 'value changed successfully!')
+        else:
+            messages.error(request, 'please provide value')
     return redirect('grocery:index')
